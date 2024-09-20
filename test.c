@@ -44,6 +44,10 @@ void printPhonebook(struct phonebook *pb)
         printPerson(pb->people[i]);
         printf("\n");
     }
+    if (pb->count == 0)
+    {
+        printf("Phonebook is currently empty, no records found.\n");
+    }
 }
 void addPerson(struct phonebook *pb, const char *fname, const char *lname, const char *street, int streetno, long int telno)
 {
@@ -109,24 +113,23 @@ void searchPerson(struct phonebook *pb)
         fgets(lname, sizeof(lname), stdin);
         fname[strcspn(fname, "\n")] = '\0'; // Remove the newline, if any
         lname[strcspn(lname, "\n")] = '\0'; // Remove the newline, if any
-        printf("fname is 1%s1 and lname is 1%s1\n", fname, lname);
+
         int f = 0;
         for (int i = 0; i < pb->count; i++)
         {
-            printf("person fname is 1%s1 and lname is 1%s1\n", pb->people[i].fname, pb->people[i].lname);
+
             if (strcmp(fname, pb->people[i].fname) == 0 && strcmp(lname, pb->people[i].lname) == 0)
             {
                 printf("Person found.");
                 printPerson(pb->people[i]);
                 f = 1;
-                printf("name is %s %s \n", pb->people[i].fname, pb->people[i].lname);
+
                 break;
             }
         }
         if (f == 0)
         {
             printf("Person not found.\n");
-            printf("count is %d", pb->count);
         }
     }
     else if (choice == 2)
@@ -263,34 +266,45 @@ void modifyPerson(struct phonebook *pb)
 
 void deletePerson(struct phonebook *pb)
 {
-    char fname[100];
-    char lname[100];
-    printf("Enter first name: ");
-    fgets(fname, sizeof(fname), stdin);
-    // Remove the newline character at the end if it exists
-
-    printf("Enter last name: ");
-    fgets(lname, sizeof(lname), stdin);
-    fname[strcspn(fname, "\n")] = '\0'; // Remove the newline, if any
-    lname[strcspn(lname, "\n")] = '\0'; // Remove the newline, if any
-
-    int f = 0;
-    for (int i = 0; i < pb->count; i++)
+    int choice;
+    printf("Are you sure you want to delete a person? Press 1 to continue, press 0 to return to menu.\nEnter number:");
+    scanf("%d", &choice);
+    getchar();
+    if (choice == 1)
     {
-        if (strcmp(fname, pb->people[i].fname) == 0 && strcmp(lname, pb->people[i].lname) == 0)
+        char fname[100];
+        char lname[100];
+        printf("Enter first name: ");
+        fgets(fname, sizeof(fname), stdin);
+        // Remove the newline character at the end if it exists
+
+        printf("Enter last name: ");
+        fgets(lname, sizeof(lname), stdin);
+        fname[strcspn(fname, "\n")] = '\0'; // Remove the newline, if any
+        lname[strcspn(lname, "\n")] = '\0'; // Remove the newline, if any
+
+        int f = 0;
+        for (int i = 0; i < pb->count; i++)
         {
-            printf("Person found.");
-            // we're going to switch person[i] with the last person (position:count) and then decrease count, effectively deleting the entry
-            pb->people[i] = pb->people[pb->count-1];
-            pb->count--;
-            printf("Person deleted.\n");
-            f = 1;
-            break;
+            if (strcmp(fname, pb->people[i].fname) == 0 && strcmp(lname, pb->people[i].lname) == 0)
+            {
+                printf("Person found.");
+                // we're going to switch person[i] with the last person (position:count) and then decrease count, effectively deleting the entry
+                pb->people[i] = pb->people[pb->count - 1];
+                pb->count--;
+                printf("Person deleted.\n");
+                f = 1;
+                break;
+            }
+        }
+        if (f == 0)
+        {
+            printf("Person not found.\n");
         }
     }
-    if (f == 0)
+    else if (choice == 0)
     {
-        printf("Person not found.\n");
+        menu(pb);
     }
 }
 
@@ -300,10 +314,12 @@ void menu(struct phonebook *pb)
     int choice;
     do
     {
+        printf("\n /////////Menu/////////\n");
         printf("Press 1 to add a person\n");
         printf("Press 2 to search a person.\n");
         printf("press 3 to print entire phonebook\n");
         printf("Press 4 to modify a person's details.\n");
+        printf("Press 5 to delete a person.\n");
         printf("Press 0 to exit program.\n");
         printf("Enter number:\n");
 
@@ -324,6 +340,10 @@ void menu(struct phonebook *pb)
         else if (choice == 4)
         {
             modifyPerson(pb);
+        }
+        else if (choice == 5)
+        {
+            deletePerson(pb);
         }
     } while (choice != 0);
 }
