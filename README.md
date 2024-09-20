@@ -8,3 +8,5 @@ Basic functions include:
 -Delete the entry of a person.
 
 Deletion works by switching the position we wish to delete with the last position, and then decreasing the count pointer. 
+
+The array is unsorted. Possible improvement in the future is using a different data structure more optimized for the task such as a hashtable.
