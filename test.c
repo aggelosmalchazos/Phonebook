@@ -274,26 +274,16 @@ void deletePerson(struct phonebook *pb)
     fname[strcspn(fname, "\n")] = '\0'; // Remove the newline, if any
     lname[strcspn(lname, "\n")] = '\0'; // Remove the newline, if any
 
-    char newfname[100];
-    char newlname[100];
-    printf("Enter new first name: ");
-    fgets(newfname, sizeof(newfname), stdin);
-    // Remove the newline character at the end if it exists
-
-    printf("Enter new last name: ");
-    fgets(newlname, sizeof(newlname), stdin);
-    newfname[strcspn(newfname, "\n")] = '\0'; // Remove the newline, if any
-    newlname[strcspn(newlname, "\n")] = '\0'; // Remove the newline, if any
-
     int f = 0;
     for (int i = 0; i < pb->count; i++)
     {
         if (strcmp(fname, pb->people[i].fname) == 0 && strcmp(lname, pb->people[i].lname) == 0)
         {
             printf("Person found.");
-            strcpy(pb->people[i].fname, newfname);
-            strcpy(pb->people[i].lname, newlname);
-            printf("Change made.\n");
+            // we're going to switch person[i] with the last person (position:count) and then decrease count, effectively deleting the entry
+            pb->people[i] = pb->people[pb->count-1];
+            pb->count--;
+            printf("Person deleted.\n");
             f = 1;
             break;
         }
